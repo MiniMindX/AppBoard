@@ -296,13 +296,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSGestureR
 
     private func makePreferredModelContainer() -> ModelContainer? {
         do {
-            let fm = FileManager.default
-            let appSupport = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let storeDir = appSupport.appendingPathComponent("AppBoard", isDirectory: true)
-            if !fm.fileExists(atPath: storeDir.path) {
-                try fm.createDirectory(at: storeDir, withIntermediateDirectories: true)
-            }
-            let storeURL = storeDir.appendingPathComponent("Data.store")
+            let storeURL = try AppSupport.directory().appendingPathComponent("Data.store")
             let configuration = ModelConfiguration(url: storeURL)
             return try ModelContainer(for: TopItemData.self, PageEntryData.self, configurations: configuration)
         } catch {

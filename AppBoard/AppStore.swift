@@ -6092,15 +6092,7 @@ final class AppStore: ObservableObject {
     }
 
     private static func ensureAppSupportDirectory() -> URL {
-        let fm = FileManager.default
-        if let base = try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true) {
-            let dir = base.appendingPathComponent("AppBoard", isDirectory: true)
-            if !fm.fileExists(atPath: dir.path) {
-                try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
-            }
-            return dir
-        }
-        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        (try? AppSupport.directory()) ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
 
     private static var customIconFileURL: URL {
@@ -6854,11 +6846,10 @@ final class AppStore: ObservableObject {
     @MainActor
     func openUpdaterConfigFile() {
         let fm = FileManager.default
-        let baseDirectory = fm.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library")
-            .appendingPathComponent("Application Support")
-            .appendingPathComponent("AppBoard")
-            .appendingPathComponent("updates", isDirectory: true)
+        let baseContainer = (try? AppSupport.directory())
+            ?? fm.homeDirectoryForCurrentUser
+                .appendingPathComponent("Library/Application Support/\(AppSupport.containerName)")
+        let baseDirectory = baseContainer.appendingPathComponent("updates", isDirectory: true)
         let configURL = baseDirectory.appendingPathComponent("config.json", isDirectory: false)
         let supportedLanguages = ["de", "en", "es", "fr", "it", "hi", "ja", "ko", "ru", "vi", "zh", "zh-Hant"]
         let defaultConfig: [String: Any] = [

@@ -6,17 +6,7 @@ enum AppBoardCLIIPCConfig {
     static let socketFileName = "cli.sock"
 
     static func socketPath() -> String? {
-        let fm = FileManager.default
-        guard let caches = try? fm.url(for: .cachesDirectory,
-                                       in: .userDomainMask,
-                                       appropriateFor: nil,
-                                       create: true) else {
-            return nil
-        }
-        let directory = caches.appendingPathComponent("AppBoard", isDirectory: true)
-        if !fm.fileExists(atPath: directory.path) {
-            try? fm.createDirectory(at: directory, withIntermediateDirectories: true)
-        }
+        guard let directory = try? AppSupport.cachesDirectory() else { return nil }
         return directory.appendingPathComponent(socketFileName, isDirectory: false).path
     }
 }

@@ -1118,7 +1118,7 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
             dataStorePath = supportURL.appendingPathComponent("Data.store").path
         } else {
             let home = FileManager.default.homeDirectoryForCurrentUser.path
-            dataStorePath = "\(home)/Library/Application Support/AppBoard/Data.store"
+            dataStorePath = "\(home)/Library/Application Support/\(AppSupport.containerName)/Data.store"
         }
         let escapedPath = dataStorePath.replacingOccurrences(of: "\"", with: "\\\"")
         return """
@@ -5309,13 +5309,7 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
 
     // MARK: - Export / Import Application Support Data
     private func supportDirectoryURL() throws -> URL {
-        let fm = FileManager.default
-        let appSupport = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let dir = appSupport.appendingPathComponent("AppBoard", isDirectory: true)
-        if !fm.fileExists(atPath: dir.path) {
-            try fm.createDirectory(at: dir, withIntermediateDirectories: true)
-        }
-        return dir
+        try AppSupport.directory()
     }
 
     private func exportDataFolder() {

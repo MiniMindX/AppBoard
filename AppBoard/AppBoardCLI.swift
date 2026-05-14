@@ -658,17 +658,7 @@ enum AppBoardCLI {
     }
 
     private static func cliHistoryFilePath() -> String? {
-        let fileManager = FileManager.default
-        guard let appSupport = try? fileManager.url(for: .applicationSupportDirectory,
-                                                    in: .userDomainMask,
-                                                    appropriateFor: nil,
-                                                    create: true) else {
-            return nil
-        }
-        let directory = appSupport.appendingPathComponent("AppBoard", isDirectory: true)
-        if !fileManager.fileExists(atPath: directory.path) {
-            try? fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
-        }
+        guard let directory = try? AppSupport.directory() else { return nil }
         return directory.appendingPathComponent("cli_history", isDirectory: false).path
     }
 
