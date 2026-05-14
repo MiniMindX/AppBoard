@@ -4,7 +4,7 @@
 
 macOS Tahoe 移除了 Launchpad，新的Apps不能满足用户的需求，也不能充分利用电脑的 Bio GPU。但是苹果并没有给出回退的选项。AppBoard试图解决这个问题。
 
-*AppBoard基于 [LaunchNext](https://github.com/RoversX/LaunchNext) 和 [LaunchNow](https://github.com/ggkevinnnn/LaunchNow)（作者 ggkevinnnn）开发——非常感谢原项目！❤️*
+*AppBoard 基于 [LaunchNext](https://github.com/RoversX/LaunchNext) 和 [LaunchNow](https://github.com/ggkevinnnn/LaunchNow) 开发，非常感谢原项目！*
 
 *LaunchNext和LaunchNow 均选择了 GPL 3 许可证，AppBoard 也遵循相同的许可条款。*
 

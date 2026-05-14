@@ -4,7 +4,7 @@
 
 macOS Tahoe odstranil Launchpad, nový zážitek Apps nesplňuje potřeby uživatelů a ani plně nevyužívá Bio GPU počítače. Apple přesto nenabízí možnost se vrátit. AppBoard se snaží tento problém vyřešit.
 
-*AppBoard vychází z [LaunchNext](https://github.com/RoversX/LaunchNext) a [LaunchNow](https://github.com/ggkevinnnn/LaunchNow) (autor: ggkevinnnn) — velké díky původním projektům! ❤️*
+*AppBoard je vyvíjen na základě [LaunchNext](https://github.com/RoversX/LaunchNext) a [LaunchNow](https://github.com/ggkevinnnn/LaunchNow), velké díky původním projektům!*
 
 *LaunchNext i LaunchNow používají licenci GPL 3, AppBoard se řídí stejnými podmínkami.*
 

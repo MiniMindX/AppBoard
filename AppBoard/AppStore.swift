@@ -5840,8 +5840,13 @@ final class AppStore: ObservableObject {
         NSWorkspace.shared.recycle([target]) { [weak self] _, error in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                if error != nil {
+                if let error = error {
+                    // On failure, don't just beep — surface the actual error the
+                    // system returned. Otherwise the user only sees "the window
+                    // closed but the app is still here" and can't tell it's a
+                    // permissions problem.
                     NSSound.beep()
+                    self.presentDeleteFailureAlert(appName: app.name, error: error)
                     return
                 }
                 self.scanApplicationsWithOrderPreservation()
@@ -5850,6 +5855,74 @@ final class AppStore: ObservableObject {
                 self.triggerFolderUpdate()
                 self.triggerGridRefresh()
                 self.saveAllOrder()
+            }
+        }
+    }
+
+    /// Shows the user why `NSWorkspace.recycle` failed.
+    /// For "missing App Management permission" errors, also offers a button that
+    /// jumps straight to System Settings — even if the user granted it before,
+    /// rebuilding AppBoard changes its signature and silently invalidates that
+    /// TCC grant, so the switch has to be toggled again to take effect.
+    private func presentDeleteFailureAlert(appName: String, error: Error) {
+        let nsError = error as NSError
+        let isPermissionError = nsError.domain == NSCocoaErrorDomain
+            && (nsError.code == NSFileWriteNoPermissionError || nsError.code == NSFileReadNoPermissionError)
+
+        let messageFormat: String
+        let permissionHint: String
+        let openSettingsButton: String
+        let okButton: String
+        switch resolvedLanguage {
+        case .simplifiedChinese:
+            messageFormat = "无法删除应用程序 \"%@\""
+            permissionHint = "AppBoard 没有移动该应用程序到废纸篓的权限。\n\n请前往“系统设置 › 隐私与安全性 › App 管理”授权 AppBoard。如果之前已经授权过，可能因为 AppBoard 重新构建后签名变化导致授权失效——请把开关关闭再重新打开，然后重启 AppBoard。"
+            openSettingsButton = "打开隐私设置"
+            okButton = "好"
+        case .traditionalChinese:
+            messageFormat = "無法刪除應用程式 \"%@\""
+            permissionHint = "AppBoard 沒有移動該應用程式到垃圾桶的權限。\n\n請前往「系統設定 › 隱私權與安全性 › App 管理」授權 AppBoard。如果之前已經授權過，可能因為 AppBoard 重新建置後簽章變化導致授權失效——請把開關關閉再重新開啟，然後重新啟動 AppBoard。"
+            openSettingsButton = "打開隱私權設定"
+            okButton = "好"
+        case .japanese:
+            messageFormat = "アプリケーション \"%@\" を削除できませんでした"
+            permissionHint = "AppBoard にこのアプリケーションをゴミ箱に移動する権限がありません。\n\n「システム設定 › プライバシーとセキュリティ › App 管理」で AppBoard を許可してください。すでに許可済みの場合は、AppBoard の再ビルドで署名が変わり許可が無効になっている可能性があります。スイッチをオフにして再度オンにし、AppBoard を再起動してください。"
+            openSettingsButton = "プライバシー設定を開く"
+            okButton = "OK"
+        default:
+            messageFormat = "Couldn't delete the application \"%@\""
+            permissionHint = "AppBoard doesn't have permission to move this application to the Trash.\n\nGrant AppBoard access under System Settings › Privacy & Security › App Management. If you already granted it, rebuilding AppBoard can change its signature and silently invalidate the grant — toggle the switch off and back on, then relaunch AppBoard."
+            openSettingsButton = "Open Privacy Settings"
+            okButton = "OK"
+        }
+
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = String(format: messageFormat, appName)
+        if isPermissionError {
+            alert.informativeText = permissionHint + "\n\n(\(nsError.localizedDescription))"
+            alert.addButton(withTitle: openSettingsButton)
+        } else {
+            alert.informativeText = nsError.localizedDescription
+        }
+        alert.addButton(withTitle: okButton)
+
+        // Same as the confirmation alert in deleteAppFromGrid: while the modal is
+        // up we must keep the launcher from being auto-hidden.
+        let delegate = AppDelegate.shared
+        delegate?.suppressAutoHide = true
+        defer {
+            delegate?.suppressAutoHide = false
+            if let window = delegate?.launcherWindow, window.isVisible {
+                NSApp.activate(ignoringOtherApps: true)
+                window.makeKeyAndOrderFront(nil)
+            }
+        }
+
+        let response = alert.runModal()
+        if isPermissionError, response == .alertFirstButtonReturn {
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AppBundles") {
+                NSWorkspace.shared.open(url)
             }
         }
     }

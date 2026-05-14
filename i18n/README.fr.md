@@ -4,7 +4,7 @@
 
 macOS Tahoe a supprimé Launchpad, la nouvelle expérience Apps ne répond pas aux besoins des utilisateurs et n'exploite pas le Bio GPU du Mac. Pourtant Apple n'offre aucune option de retour en arrière. AppBoard tente de résoudre ce problème.
 
-*AppBoard est construit à partir de [LaunchNext](https://github.com/RoversX/LaunchNext) et [LaunchNow](https://github.com/ggkevinnnn/LaunchNow) (auteur : ggkevinnnn) — un grand merci aux projets originaux ! ❤️*
+*AppBoard est développé à partir de [LaunchNext](https://github.com/RoversX/LaunchNext) et [LaunchNow](https://github.com/ggkevinnnn/LaunchNow), un grand merci aux projets originaux !*
 
 *LaunchNext et LaunchNow sont tous deux sous licence GPL 3, et AppBoard suit les mêmes conditions de licence.*
 

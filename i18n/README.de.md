@@ -4,7 +4,7 @@
 
 macOS Tahoe hat Launchpad entfernt; die neue Apps-Erfahrung erfüllt die Anforderungen der Nutzer nicht und schöpft die Bio GPU des Macs nicht aus. Apple bietet jedoch keine Option für den Rückweg. AppBoard versucht, diese Lücke zu schließen.
 
-*AppBoard baut auf [LaunchNext](https://github.com/RoversX/LaunchNext) und [LaunchNow](https://github.com/ggkevinnnn/LaunchNow) (Autor: ggkevinnnn) auf — vielen Dank an die Originalprojekte! ❤️*
+*AppBoard wurde auf Basis von [LaunchNext](https://github.com/RoversX/LaunchNext) und [LaunchNow](https://github.com/ggkevinnnn/LaunchNow) entwickelt, vielen Dank an die Originalprojekte!*
 
 *LaunchNext und LaunchNow stehen beide unter GPL 3, und AppBoard folgt denselben Lizenzbedingungen.*
 
